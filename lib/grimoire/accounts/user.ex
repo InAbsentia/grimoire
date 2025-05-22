@@ -1,6 +1,8 @@
 defmodule Grimoire.Accounts.User do
   use Ecto.Schema
 
+  alias Grimoire.Feeds.Feed
+
   import Ecto.Changeset
 
   @min_password_length 20
@@ -14,7 +16,9 @@ defmodule Grimoire.Accounts.User do
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
 
-    timestamps(type: :utc_datetime)
+    has_many :feeds, Feed
+
+    timestamps type: :utc_datetime
   end
 
   @doc """

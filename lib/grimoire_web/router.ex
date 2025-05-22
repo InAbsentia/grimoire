@@ -67,6 +67,11 @@ defmodule GrimoireWeb.Router do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
+
+      live "/feeds", FeedLive.Index, :index
+      live "/feeds/new", FeedLive.Form, :new
+      live "/feeds/:id", FeedLive.Show, :show
+      live "/feeds/:id/edit", FeedLive.Form, :edit
     end
 
     post "/users/log-in", UserSessionController, :create
