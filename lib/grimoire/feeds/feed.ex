@@ -5,6 +5,9 @@ defmodule Grimoire.Feeds.Feed do
 
   import Ecto.Changeset
 
+  @required [:name]
+  @allowed [:name]
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "feeds" do
@@ -18,8 +21,8 @@ defmodule Grimoire.Feeds.Feed do
   @doc false
   def changeset(feed, attrs, user_scope) do
     feed
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, @allowed)
+    |> validate_required(@required)
     |> put_change(:user_id, user_scope.user.id)
   end
 end

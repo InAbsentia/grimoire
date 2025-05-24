@@ -4,7 +4,8 @@ defmodule Grimoire.Repo.Migrations.CreateFeeds do
   def change do
     create table(:feeds, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :name, :string
+
+      add :name, :string, null: false
 
       add :user_id, references(:users, type: :binary_id, on_delete: :delete_all)
 
