@@ -44,19 +44,19 @@ defmodule GrimoireWeb.FeedLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      Feeds.subscribe_feeds(socket.assigns.current_scope)
+      Feeds.subscribe(socket.assigns.current_scope)
     end
 
     {:ok,
      socket
      |> assign(:page_title, "Listing Feeds")
-     |> stream(:feeds, Feeds.list_feeds(socket.assigns.current_scope))}
+     |> stream(:feeds, Feeds.list(socket.assigns.current_scope))}
   end
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    feed = Feeds.get_feed!(socket.assigns.current_scope, id)
-    {:ok, _} = Feeds.delete_feed(socket.assigns.current_scope, feed)
+    feed = Feeds.get!(socket.assigns.current_scope, id)
+    {:ok, _} = Feeds.delete(socket.assigns.current_scope, feed)
 
     {:noreply, stream_delete(socket, :feeds, feed)}
   end
@@ -64,6 +64,6 @@ defmodule GrimoireWeb.FeedLive.Index do
   @impl true
   def handle_info({type, %Grimoire.Feeds.Feed{}}, socket)
       when type in [:created, :updated, :deleted] do
-    {:noreply, stream(socket, :feeds, Feeds.list_feeds(socket.assigns.current_scope), reset: true)}
+    {:noreply, stream(socket, :feeds, Feeds.list(socket.assigns.current_scope), reset: true)}
   end
 end

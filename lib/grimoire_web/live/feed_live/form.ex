@@ -36,12 +36,12 @@ defmodule GrimoireWeb.FeedLive.Form do
   defp return_to(_), do: "index"
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    feed = Feeds.get_feed!(socket.assigns.current_scope, id)
+    feed = Feeds.get!(socket.assigns.current_scope, id)
 
     socket
     |> assign(:page_title, "Edit Feed")
     |> assign(:feed, feed)
-    |> assign(:form, to_form(Feeds.change_feed(socket.assigns.current_scope, feed)))
+    |> assign(:form, to_form(Feeds.change(socket.assigns.current_scope, feed)))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -50,12 +50,12 @@ defmodule GrimoireWeb.FeedLive.Form do
     socket
     |> assign(:page_title, "New Feed")
     |> assign(:feed, feed)
-    |> assign(:form, to_form(Feeds.change_feed(socket.assigns.current_scope, feed)))
+    |> assign(:form, to_form(Feeds.change(socket.assigns.current_scope, feed)))
   end
 
   @impl true
   def handle_event("validate", %{"feed" => feed_params}, socket) do
-    changeset = Feeds.change_feed(socket.assigns.current_scope, socket.assigns.feed, feed_params)
+    changeset = Feeds.change(socket.assigns.current_scope, socket.assigns.feed, feed_params)
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
@@ -64,7 +64,7 @@ defmodule GrimoireWeb.FeedLive.Form do
   end
 
   defp save_feed(socket, :edit, feed_params) do
-    case Feeds.update_feed(socket.assigns.current_scope, socket.assigns.feed, feed_params) do
+    case Feeds.update(socket.assigns.current_scope, socket.assigns.feed, feed_params) do
       {:ok, feed} ->
         {:noreply,
          socket
@@ -79,7 +79,7 @@ defmodule GrimoireWeb.FeedLive.Form do
   end
 
   defp save_feed(socket, :new, feed_params) do
-    case Feeds.create_feed(socket.assigns.current_scope, feed_params) do
+    case Feeds.create(socket.assigns.current_scope, feed_params) do
       {:ok, feed} ->
         {:noreply,
          socket

@@ -10,14 +10,14 @@ defmodule GrimoireWeb.FeedLiveTest do
 
   setup :register_and_log_in_user
 
-  defp create_feed(%{scope: scope}) do
+  defp create(%{scope: scope}) do
     feed = feed_fixture(scope)
 
     %{feed: feed}
   end
 
   describe "Index" do
-    setup [:create_feed]
+    setup [:create]
 
     test "lists all feeds", %{conn: conn, feed: feed} do
       {:ok, _index_live, html} = live(conn, ~p"/feeds")
@@ -87,7 +87,7 @@ defmodule GrimoireWeb.FeedLiveTest do
   end
 
   describe "Show" do
-    setup [:create_feed]
+    setup [:create]
 
     test "displays feed", %{conn: conn, feed: feed} do
       {:ok, _show_live, html} = live(conn, ~p"/feeds/#{feed}")

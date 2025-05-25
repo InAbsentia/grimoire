@@ -8,6 +8,7 @@ defmodule Grimoire.Feeds do
   alias Grimoire.Accounts.Scope
   alias Grimoire.Feeds.Feed
   alias Grimoire.Repo
+  alias Phoenix.PubSub
 
   @doc """
   Subscribes to scoped notifications about any feed changes.
@@ -19,16 +20,10 @@ defmodule Grimoire.Feeds do
     * {:deleted, %Feed{}}
 
   """
-  def subscribe_feeds(%Scope{} = scope) do
+  def subscribe(%Scope{} = scope) do
     key = scope.user.id
 
-    Phoenix.PubSub.subscribe(Grimoire.PubSub, "user:#{key}:feeds")
-  end
-
-  defp broadcast(%Scope{} = scope, message) do
-    key = scope.user.id
-
-    Phoenix.PubSub.broadcast(Grimoire.PubSub, "user:#{key}:feeds", message)
+    PubSub.subscribe(Grimoire.PubSub, "user:#{key}:feeds")
   end
 
   @doc """
@@ -36,11 +31,11 @@ defmodule Grimoire.Feeds do
 
   ## Examples
 
-      iex> list_feeds(scope)
+      iex> list(scope)
       [%Feed{}, ...]
 
   """
-  def list_feeds(%Scope{} = scope) do
+  def list(%Scope{} = scope) do
     Repo.all(from feed in Feed, where: feed.user_id == ^scope.user.id)
   end
 
@@ -51,14 +46,14 @@ defmodule Grimoire.Feeds do
 
   ## Examples
 
-      iex> get_feed!(123)
+      iex> get!(123)
       %Feed{}
 
-      iex> get_feed!(456)
+      iex> get!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_feed!(%Scope{} = scope, id) do
+  def get!(%Scope{} = scope, id) do
     Repo.get_by!(Feed, id: id, user_id: scope.user.id)
   end
 
@@ -67,19 +62,17 @@ defmodule Grimoire.Feeds do
 
   ## Examples
 
-      iex> create_feed(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Feed{}}
 
-      iex> create_feed(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_feed(%Scope{} = scope, attrs) do
-    with {:ok, feed = %Feed{}} <-
-           %Feed{}
-           |> Feed.changeset(attrs, scope)
-           |> Repo.insert() do
+  def create(%Scope{} = scope, attrs) do
+    with {:ok, feed = %Feed{}} <- do_create(attrs, scope) do
       broadcast(scope, {:created, feed})
+
       {:ok, feed}
     end
   end
@@ -89,21 +82,19 @@ defmodule Grimoire.Feeds do
 
   ## Examples
 
-      iex> update_feed(feed, %{field: new_value})
+      iex> update(feed, %{field: new_value})
       {:ok, %Feed{}}
 
-      iex> update_feed(feed, %{field: bad_value})
+      iex> update(feed, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_feed(%Scope{} = scope, %Feed{} = feed, attrs) do
+  def update(%Scope{} = scope, %Feed{} = feed, attrs) do
     true = feed.user_id == scope.user.id
 
-    with {:ok, feed = %Feed{}} <-
-           feed
-           |> Feed.changeset(attrs, scope)
-           |> Repo.update() do
+    with {:ok, feed = %Feed{}} <- do_update(feed, attrs, scope) do
       broadcast(scope, {:updated, feed})
+
       {:ok, feed}
     end
   end
@@ -113,19 +104,19 @@ defmodule Grimoire.Feeds do
 
   ## Examples
 
-      iex> delete_feed(feed)
+      iex> delete(feed)
       {:ok, %Feed{}}
 
-      iex> delete_feed(feed)
+      iex> delete(feed)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_feed(%Scope{} = scope, %Feed{} = feed) do
+  def delete(%Scope{} = scope, %Feed{} = feed) do
     true = feed.user_id == scope.user.id
 
-    with {:ok, feed = %Feed{}} <-
-           Repo.delete(feed) do
+    with {:ok, feed = %Feed{}} <- do_delete(feed) do
       broadcast(scope, {:deleted, feed})
+
       {:ok, feed}
     end
   end
@@ -135,13 +126,33 @@ defmodule Grimoire.Feeds do
 
   ## Examples
 
-      iex> change_feed(feed)
+      iex> change(feed)
       %Ecto.Changeset{data: %Feed{}}
 
   """
-  def change_feed(%Scope{} = scope, %Feed{} = feed, attrs \\ %{}) do
+  def change(%Scope{} = scope, %Feed{} = feed, attrs \\ %{}) do
     true = feed.user_id == scope.user.id
 
     Feed.changeset(feed, attrs, scope)
   end
+
+  defp broadcast(%Scope{} = scope, message) do
+    key = scope.user.id
+
+    PubSub.broadcast(Grimoire.PubSub, "user:#{key}:feeds", message)
+  end
+
+  defp do_create(attrs, scope) do
+    %Feed{}
+    |> Feed.changeset(attrs, scope)
+    |> Repo.insert()
+  end
+
+  defp do_update(feed, attrs, scope) do
+    feed
+    |> Feed.changeset(attrs, scope)
+    |> Repo.update()
+  end
+
+  defp do_delete(feed), do: Repo.delete(feed)
 end

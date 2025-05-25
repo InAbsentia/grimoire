@@ -30,13 +30,13 @@ defmodule GrimoireWeb.FeedLive.Show do
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     if connected?(socket) do
-      Feeds.subscribe_feeds(socket.assigns.current_scope)
+      Feeds.subscribe(socket.assigns.current_scope)
     end
 
     {:ok,
      socket
      |> assign(:page_title, "Show Feed")
-     |> assign(:feed, Feeds.get_feed!(socket.assigns.current_scope, id))}
+     |> assign(:feed, Feeds.get!(socket.assigns.current_scope, id))}
   end
 
   @impl true

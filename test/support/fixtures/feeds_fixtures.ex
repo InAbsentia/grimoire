@@ -8,12 +8,9 @@ defmodule Grimoire.FeedsFixtures do
   Generate a feed.
   """
   def feed_fixture(scope, attrs \\ %{}) do
-    attrs =
-      Enum.into(attrs, %{
-        name: "some name"
-      })
+    attrs = Enum.into(attrs, %{name: "some name"})
+    {:ok, feed} = Grimoire.Feeds.create(scope, attrs)
 
-    {:ok, feed} = Grimoire.Feeds.create_feed(scope, attrs)
     feed
   end
 end

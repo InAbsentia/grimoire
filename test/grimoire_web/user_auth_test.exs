@@ -1,10 +1,10 @@
 defmodule GrimoireWeb.UserAuthTest do
   use GrimoireWeb.ConnCase, async: true
 
-  alias Phoenix.LiveView
   alias Grimoire.Accounts
   alias Grimoire.Accounts.Scope
   alias GrimoireWeb.UserAuth
+  alias Phoenix.LiveView
 
   import Grimoire.AccountsFixtures
 
