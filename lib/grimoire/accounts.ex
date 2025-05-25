@@ -5,8 +5,8 @@ defmodule Grimoire.Accounts do
 
   import Ecto.Query, warn: false
 
-  alias Grimoire.Repo
   alias Grimoire.Accounts.{User, UserToken, UserNotifier}
+  alias Grimoire.Repo
 
   ## Database getters
 

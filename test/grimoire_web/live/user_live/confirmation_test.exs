@@ -1,10 +1,10 @@
 defmodule GrimoireWeb.UserLive.ConfirmationTest do
   use GrimoireWeb.ConnCase, async: true
 
+  alias Grimoire.Accounts
+
   import Phoenix.LiveViewTest
   import Grimoire.AccountsFixtures
-
-  alias Grimoire.Accounts
 
   setup do
     %{unconfirmed_user: unconfirmed_user_fixture(), confirmed_user: user_fixture()}

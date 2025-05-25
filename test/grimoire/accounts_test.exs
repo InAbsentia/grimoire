@@ -2,9 +2,9 @@ defmodule Grimoire.AccountsTest do
   use Grimoire.DataCase
 
   alias Grimoire.Accounts
+  alias Grimoire.Accounts.{User, UserToken}
 
   import Grimoire.AccountsFixtures
-  alias Grimoire.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do

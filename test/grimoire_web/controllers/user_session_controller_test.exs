@@ -1,8 +1,9 @@
 defmodule GrimoireWeb.UserSessionControllerTest do
   use GrimoireWeb.ConnCase, async: true
 
-  import Grimoire.AccountsFixtures
   alias Grimoire.Accounts
+
+  import Grimoire.AccountsFixtures
 
   setup do
     %{unconfirmed_user: unconfirmed_user_fixture(), user: user_fixture()}
