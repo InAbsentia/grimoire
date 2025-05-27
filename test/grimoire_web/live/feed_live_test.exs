@@ -1,10 +1,12 @@
 defmodule GrimoireWeb.FeedLiveTest do
   use GrimoireWeb.ConnCase
 
+  alias Grimoire.Feeds.Feed
+
   import Phoenix.LiveViewTest
   import Grimoire.FeedsFixtures
 
-  @create_attrs %{name: "some name"}
+  @create_attrs valid_feed_attrs()
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
@@ -48,6 +50,7 @@ defmodule GrimoireWeb.FeedLiveTest do
                |> follow_redirect(conn, ~p"/feeds")
 
       html = render(index_live)
+
       assert html =~ "Feed created successfully"
       assert html =~ "some name"
     end
@@ -94,6 +97,8 @@ defmodule GrimoireWeb.FeedLiveTest do
 
       assert html =~ "Show Feed"
       assert html =~ feed.name
+      assert html =~ Map.get(Feed.source_types(), feed.source_type)
+      assert html =~ feed.source_url
     end
 
     test "updates feed and returns to show", %{conn: conn, feed: feed} do

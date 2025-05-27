@@ -15,6 +15,7 @@ defmodule Grimoire.FeedsTest do
       other_scope = user_scope_fixture()
       feed = feed_fixture(scope)
       other_feed = feed_fixture(other_scope)
+
       assert Feeds.list(scope) == [feed]
       assert Feeds.list(other_scope) == [other_feed]
     end
@@ -23,12 +24,13 @@ defmodule Grimoire.FeedsTest do
       scope = user_scope_fixture()
       feed = feed_fixture(scope)
       other_scope = user_scope_fixture()
+
       assert Feeds.get!(scope, feed.id) == feed
       assert_raise Ecto.NoResultsError, fn -> Feeds.get!(other_scope, feed.id) end
     end
 
     test "create/2 with valid data creates a feed" do
-      valid_attrs = %{name: "some name"}
+      valid_attrs = valid_feed_attrs()
       scope = user_scope_fixture()
 
       assert {:ok, %Feed{} = feed} = Feeds.create(scope, valid_attrs)
@@ -38,6 +40,7 @@ defmodule Grimoire.FeedsTest do
 
     test "create/2 with invalid data returns error changeset" do
       scope = user_scope_fixture()
+
       assert {:error, %Ecto.Changeset{}} = Feeds.create(scope, @invalid_attrs)
     end
 
@@ -63,6 +66,7 @@ defmodule Grimoire.FeedsTest do
     test "update/3 with invalid data returns error changeset" do
       scope = user_scope_fixture()
       feed = feed_fixture(scope)
+
       assert {:error, %Ecto.Changeset{}} = Feeds.update(scope, feed, @invalid_attrs)
       assert feed == Feeds.get!(scope, feed.id)
     end
@@ -70,6 +74,7 @@ defmodule Grimoire.FeedsTest do
     test "delete/2 deletes the feed" do
       scope = user_scope_fixture()
       feed = feed_fixture(scope)
+
       assert {:ok, %Feed{}} = Feeds.delete(scope, feed)
       assert_raise Ecto.NoResultsError, fn -> Feeds.get!(scope, feed.id) end
     end
@@ -78,12 +83,14 @@ defmodule Grimoire.FeedsTest do
       scope = user_scope_fixture()
       other_scope = user_scope_fixture()
       feed = feed_fixture(scope)
+
       assert_raise MatchError, fn -> Feeds.delete(other_scope, feed) end
     end
 
     test "change/2 returns a feed changeset" do
       scope = user_scope_fixture()
       feed = feed_fixture(scope)
+
       assert %Ecto.Changeset{} = Feeds.change(scope, feed)
     end
   end
