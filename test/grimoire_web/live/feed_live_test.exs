@@ -1,5 +1,5 @@
 defmodule GrimoireWeb.FeedLiveTest do
-  use GrimoireWeb.ConnCase
+  use GrimoireWeb.ConnCase, async: true
 
   alias Grimoire.Feeds.Feed
 

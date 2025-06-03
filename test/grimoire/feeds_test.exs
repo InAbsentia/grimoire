@@ -1,5 +1,5 @@
 defmodule Grimoire.FeedsTest do
-  use Grimoire.DataCase
+  use Grimoire.DataCase, async: true
 
   alias Grimoire.Feeds
   alias Grimoire.Feeds.Feed
