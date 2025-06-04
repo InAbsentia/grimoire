@@ -98,7 +98,7 @@ defmodule GrimoireWeb.FeedLiveTest do
       assert html =~ "Show Feed"
       assert html =~ feed.name
       assert html =~ Map.get(Feed.source_types(), feed.source_type)
-      assert html =~ feed.source_url
+      assert html =~ to_string(feed.source_url)
     end
 
     test "updates feed and returns to show", %{conn: conn, feed: feed} do

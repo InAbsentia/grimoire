@@ -4,7 +4,7 @@ defmodule Grimoire.Repo.Migrations.AddSourceTypeAndUrlToFeeds do
   def change do
     alter table(:feeds) do
       add :source_type, :string, null: false
-      add :source_url, :string, null: false
+      add :source_url, :map, null: false
     end
   end
 end
