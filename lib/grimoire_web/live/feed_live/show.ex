@@ -2,13 +2,14 @@ defmodule GrimoireWeb.FeedLive.Show do
   use GrimoireWeb, :live_view
 
   alias Grimoire.Feeds
+  alias Grimoire.Feeds.Feed
 
   @impl true
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Feed {@feed.id}
+        {@feed.name}
         <:subtitle>This is a feed record from your database.</:subtitle>
         <:actions>
           <.button navigate={~p"/feeds"}>
@@ -22,6 +23,8 @@ defmodule GrimoireWeb.FeedLive.Show do
 
       <.list>
         <:item title="Name">{@feed.name}</:item>
+        <:item title="Source Type">{source_type(@feed)}</:item>
+        <:item title="Source URL">{@feed.source_url}</:item>
       </.list>
     </Layouts.app>
     """
@@ -61,4 +64,7 @@ defmodule GrimoireWeb.FeedLive.Show do
       when type in [:created, :updated, :deleted] do
     {:noreply, socket}
   end
+
+  defp source_type(%Feed{source_type: type}),
+    do: Map.get(Feed.source_types(), type)
 end

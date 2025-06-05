@@ -1,5 +1,5 @@
 defmodule Grimoire.AccountsTest do
-  use Grimoire.DataCase
+  use Grimoire.DataCase, async: true
 
   alias Grimoire.Accounts
   alias Grimoire.Accounts.{User, UserToken}

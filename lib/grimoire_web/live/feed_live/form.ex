@@ -15,6 +15,14 @@ defmodule GrimoireWeb.FeedLive.Form do
 
       <.form for={@form} id="feed-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label="Name" />
+        <.input
+          field={@form[:source_type]}
+          type="select"
+          options={source_type_options(@form[:source_type])}
+          label="Source Type"
+        />
+        <.input field={@form[:source_url]} type="text" label="Source URL" />
+
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Feed</.button>
           <.button navigate={return_path(@current_scope, @return_to, @feed)}>Cancel</.button>
@@ -56,11 +64,21 @@ defmodule GrimoireWeb.FeedLive.Form do
   @impl true
   def handle_event("validate", %{"feed" => feed_params}, socket) do
     changeset = Feeds.change(socket.assigns.current_scope, socket.assigns.feed, feed_params)
+
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
   def handle_event("save", %{"feed" => feed_params}, socket) do
     save_feed(socket, socket.assigns.live_action, feed_params)
+  end
+
+  defp source_type_options(source_type) do
+    Enum.map(
+      Feed.source_types(),
+      fn {key, val} ->
+        [key: val, value: key, selected: key == source_type]
+      end
+    )
   end
 
   defp save_feed(socket, :edit, feed_params) do
